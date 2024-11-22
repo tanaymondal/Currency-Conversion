@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 data class ApiResponse(
     val timestamp: Long,
-    val currencyList: MutableList<Currency>,
-    val currencyMap: MutableMap<String, Double>
+    val currencyList: List<Currency>,
+    val currencyMap: Map<String, Double>
 )
 
 @Entity(tableName = "currency")

@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
 
     alias(libs.plugins.kotlinxSerialization)
-    alias(libs.plugins.realm.plugin)
 
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
@@ -60,10 +59,6 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
 
             implementation(libs.kotlinx.datetime)
-
-            implementation(libs.mongodb.realm)
-            implementation(libs.kotlin.coroutines)
-            implementation(libs.stately.common)
 
             api(libs.datastore.preferences)
             api(libs.datastore)

@@ -16,6 +16,7 @@ import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
+import kotlin.math.round
 
 class CurrencyApiRepositoryImpl(
     private val preferenceRepository: IPreferenceRepository,
@@ -60,11 +61,9 @@ class CurrencyApiRepositoryImpl(
                 val map = mutableMapOf<String, Double>()
                 keys.forEach {
                     // rounding off to 2 decimal point
-                    //val rate = round(rates[it].toString().toDouble() * 100) / 100
-
-                    val value = rates[it].toString().toDouble()
-                    map[it] = value
-                    list.add(Currency(code = it, value = value))
+                    val rate = rates[it].toString().toDouble().roundTo()
+                    map[it] = rate
+                    list.add(Currency(code = it, value = rate))
                 }
                 println("LOG_CMP Timestamp: ${timestamp.toString()}")
                 preferenceRepository.saveTimestamp(timestamp.toString().toLong())
@@ -80,4 +79,8 @@ class CurrencyApiRepositoryImpl(
         }
 
     }
+}
+
+fun Double.roundTo(): Double {
+    return round(this * 10000) / 10000
 }

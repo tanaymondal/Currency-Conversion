@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -67,11 +68,13 @@ fun Conversation() {
         }
 
         RequestState.Loading -> {
-
+            AlertDialog(
+                onDismissRequest = { },
+                confirmButton = { },
+                title = { Text("Alert") },
+                text = { Text("Loading all currencies. Please wait...") },
+            )
         }
-
-//        verticalArrangement = Arrangement.spacedBy(8.dp),
-//        modifier = Modifier.padding(start = 5.dp, end = 5.dp)
 
         is RequestState.Success -> {
             LazyVerticalGrid(

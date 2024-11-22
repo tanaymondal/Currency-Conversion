@@ -16,8 +16,8 @@ interface CurrencyDao {
     suspend fun getCurrencyByCode(code: String): Currency
 
     @Query("SELECT * FROM currency")
-    suspend fun getAllCurrencies(): Flow<List<Currency>>
+    fun getAllCurrencies(): Flow<List<Currency>>
 
     @Upsert
-    fun upsertAll(list: MutableList<Currency>)
+    suspend fun upsertAll(list: MutableList<Currency>)
 }
