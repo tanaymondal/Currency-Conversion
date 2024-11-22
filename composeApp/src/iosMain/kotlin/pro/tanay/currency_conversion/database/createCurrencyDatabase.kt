@@ -2,13 +2,26 @@ package pro.tanay.currency_conversion.database
 
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
 
 fun createCurrencyDatabase(): CurrencyDatabase {
-    val db = NSHomeDirectory() + "/people.db"
+    val dbFilePath = documentDirectory() + "/currency.db"
     return Room.databaseBuilder<CurrencyDatabase>(
-        name = db,
-        factory = { CurrencyDatabase::class.instantiateImpl() }
+        name = dbFilePath
+    ).setDriver(BundledSQLiteDriver()).build()
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun documentDirectory(): String {
+    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
     )
-        .setDriver(BundledSQLiteDriver())
-        .build()
+    return requireNotNull(documentDirectory?.path)
 }

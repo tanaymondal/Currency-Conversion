@@ -5,6 +5,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import pro.tanay.currency_conversion.datastore.createDataStore
 import pro.tanay.currency_conversion.database.createCurrencyDatabase
+import pro.tanay.currency_conversion.viewmodel.MainViewModel
 
 actual val preferenceModule: Module = module {
     single { createDataStore() }
