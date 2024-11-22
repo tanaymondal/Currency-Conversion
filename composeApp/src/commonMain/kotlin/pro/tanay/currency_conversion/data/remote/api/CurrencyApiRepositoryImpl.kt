@@ -10,13 +10,14 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import pro.tanay.currency_conversion.domain.CurrencyApiService
+import pro.tanay.currency_conversion.domain.ICurrencyApiRepository
+import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
-import kotlin.math.round
 
-class CurrencyApiServiceImpl : CurrencyApiService {
+class CurrencyApiRepositoryImpl(private val preferenceRepository: IPreferenceRepository) :
+    ICurrencyApiRepository {
     companion object {
         private const val API_ID = "885bcf9b8abf49cbafda6ce9636637c5"
         private const val END_POINT = "https://openexchangerates.org/api/latest.json?app_id=$API_ID"
@@ -40,9 +41,8 @@ class CurrencyApiServiceImpl : CurrencyApiService {
         install(DefaultRequest)
     }
 
-    override suspend fun getLatestExchangeRates(): RequestState<ApiResponse> {
-
-        return try {
+    override suspend fun getLatestExchangeRates(): RequestState {
+        try {
             val response = httpClient.get(END_POINT)
             if (response.status.value == 200) {
 
@@ -53,18 +53,23 @@ class CurrencyApiServiceImpl : CurrencyApiService {
                 val keys = (rates as JsonObject).keys
 
                 val list = mutableListOf<Currency>()
+                val map = mutableMapOf<String, Double>()
                 keys.forEach {
                     // rounding off to 2 decimal point
-                    val rate = round(rates[it].toString().toDouble() * 100) / 100
-                    list.add(Currency(it, rate))
-                }
+                    //val rate = round(rates[it].toString().toDouble() * 100) / 100
 
-                RequestState.Success(ApiResponse(timestamp.toString().toLong(), list))
+                    val value = rates[it].toString().toDouble()
+                    map[it] = value
+                    list.add(Currency(it, value))
+                }
+                println("LOG_CMP Timestamp: ${timestamp.toString()}")
+                preferenceRepository.saveTimestamp(timestamp.toString().toLong())
+                return RequestState.Success(ApiResponse(timestamp.toString().toLong(), list, map))
             } else {
-                RequestState.Error(message = "HTTP Error Code: ${response.status}")
+                return RequestState.Error(message = "HTTP Error Code: ${response.status}")
             }
         } catch (e: Exception) {
-            RequestState.Error(message = e.message.toString())
+            return RequestState.Error(message = e.message.toString())
         }
 
     }
