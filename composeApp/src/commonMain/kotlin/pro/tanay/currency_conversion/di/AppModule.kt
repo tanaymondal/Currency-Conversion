@@ -7,6 +7,8 @@ import pro.tanay.currency_conversion.domain.ICurrencyApiRepository
 import pro.tanay.currency_conversion.domain.IPreferenceRepository
 
 val appModule = module {
+
     single<IPreferenceRepository> { PreferenceRepositoryImpl(get()) }
-    single<ICurrencyApiRepository> { CurrencyApiRepositoryImpl(get()) }
+    single<ICurrencyApiRepository> { CurrencyApiRepositoryImpl(get(), get()) }
+
 }

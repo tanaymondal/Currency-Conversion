@@ -8,13 +8,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import pro.tanay.currency_conversion.database.CurrencyDatabase
 import pro.tanay.currency_conversion.domain.ICurrencyApiRepository
 import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.RequestState
 
 class MainViewModel(
     private val preferenceService: IPreferenceRepository,
-    private val currencyApiService: ICurrencyApiRepository
+    private val currencyApiService: ICurrencyApiRepository,
+    private val database: CurrencyDatabase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<RequestState> = MutableStateFlow(RequestState.Loading)
