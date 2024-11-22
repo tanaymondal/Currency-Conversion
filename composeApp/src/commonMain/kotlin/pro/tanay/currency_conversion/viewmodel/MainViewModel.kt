@@ -34,9 +34,8 @@ class MainViewModel(
                     // if value > 0 means: data is available else no data available, need to refresh
                     if (lastRefreshedTime > 0) {
                         val difference = Clock.System.now().epochSeconds - lastRefreshedTime
-                        println("LOG_CMP: ${difference / 60}")
-                        // if 2 hour passed, refresh data
-                        if (difference > 120 * 60) {
+                        // if 30 minutes passed, refresh data
+                        if (difference > 30 * 60) {
                             getDataFromApi()
                         } else {
                             getDataFromDatabase()
@@ -44,7 +43,7 @@ class MainViewModel(
                     } else {
                         getDataFromApi()
                     }
-                    // cancel this flow after getting value one time
+                    // canceled this flow because after getting value one time, we don't want to observe
                     cancel()
                 }
         }
