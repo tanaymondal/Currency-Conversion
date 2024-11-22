@@ -13,7 +13,7 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.0"
 junit = "4.13.2"
-kotlin = "2.0.0"
+kotlin = "2.0.21"
 
 ktor = "2.3.9"
 date-time = "0.6.0"
@@ -26,8 +26,8 @@ koinCompose = "3.6.0-alpha3"
 koinComposeMultiplatform = "1.2.0-alpha3"
 navigationCompose = "2.7.0-alpha03"
 
-room = "2.7.0-alpha04"
-ksp = "2.0.0-1.0.22"
+room = "2.7.0-alpha11"
+ksp = "2.0.21-1.0.28"
 sqlite = "2.5.0-SNAPSHOT"
 
 [libraries]
