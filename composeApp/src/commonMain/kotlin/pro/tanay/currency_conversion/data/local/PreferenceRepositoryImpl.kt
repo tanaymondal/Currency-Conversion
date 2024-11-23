@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import pro.tanay.currency_conversion.domain.IPreferenceRepository
 
-class PreferenceRepositoryImpl(private val dataStore: DataStore<Preferences>) : IPreferenceRepository {
+class PreferenceRepositoryImpl(private val dataStore: DataStore<Preferences>) :
+    IPreferenceRepository {
 
     private val timestampKey = longPreferencesKey("timestamp")
 

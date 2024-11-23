@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.compose.currentKoinScope
+import kotlin.math.pow
+import kotlin.math.round
 
 
 @Composable
@@ -20,4 +22,9 @@ fun String.getValidInput(): String {
     } else {
         this
     }
+}
+
+fun Double.roundTo(decimals: Int): Double {
+    val factor = 10.0.pow(decimals)
+    return round(this * factor) / factor
 }

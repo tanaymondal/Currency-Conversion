@@ -1,4 +1,4 @@
-package pro.tanay.currency_conversion.data.remote.api
+package pro.tanay.currency_conversion.data.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
@@ -17,20 +17,16 @@ import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
-import kotlin.math.pow
-import kotlin.math.round
 
 class CurrencyApiRepositoryImpl(
     private val preferenceRepository: IPreferenceRepository,
     private val database: CurrencyDatabase
-) :
-    ICurrencyApiRepository {
+) : ICurrencyApiRepository {
+
     companion object {
         private const val API_ID = "885bcf9b8abf49cbafda6ce9636637c5"
         private const val END_POINT = "https://openexchangerates.org/api/latest.json?app_id=$API_ID"
 
-
-        private const val TIMESTAMP = "timestamp"
         private const val RATES = "rates"
     }
 
@@ -61,7 +57,6 @@ class CurrencyApiRepositoryImpl(
                 val list = mutableListOf<Currency>()
                 val map = mutableMapOf<String, Double>()
                 keys.forEach {
-                    // rounding off to 2 decimal point
                     val rate = rates[it].toString().toDouble()
                     map[it] = rate
                     list.add(Currency(code = it, value = rate))
@@ -79,9 +74,4 @@ class CurrencyApiRepositoryImpl(
         }
 
     }
-}
-
-fun Double.roundTo(decimals: Int): Double {
-    val factor = 10.0.pow(decimals)
-    return round(this * factor) / factor
 }

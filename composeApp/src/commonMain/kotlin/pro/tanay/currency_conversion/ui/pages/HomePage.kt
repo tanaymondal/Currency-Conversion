@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import co.touchlab.kermit.Logger
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.ext.getValidInput
 import pro.tanay.currency_conversion.ui.components.CurrencyPickerDialog
@@ -20,8 +19,7 @@ import surfaceColor
 
 @Composable
 fun HomePage(viewModel: MainViewModel) {
-    Logger.e(tag = "PAYPAY", messageString = "MainUI")
-    val defaultCurrency = Currency(0, "USD", 1.0)
+    val defaultCurrency = Currency("USD", 1.0)
     val inputText = remember { mutableStateOf("1") }
     val currency = remember { mutableStateOf(defaultCurrency) }
     val isDialogOpened = remember { mutableStateOf(false) }
@@ -37,7 +35,6 @@ fun HomePage(viewModel: MainViewModel) {
             currency.value,
             inputText,
             onInputChange = {
-                Logger.e(tag = "PAYPAY", messageString = "onInputChange")
                 if (viewModel.getCurrencyList().isNotEmpty()) {
                     inputText.value = it.getValidInput()
 
@@ -48,14 +45,12 @@ fun HomePage(viewModel: MainViewModel) {
                 }
             },
             onCurrencyButtonClick = {
-                Logger.e(tag = "PAYPAY", messageString = "onCurrencyChange")
                 if (viewModel.getCurrencyList().isNotEmpty()) {
                     isDialogOpened.value = true
                 }
             }
         )
 
-        Logger.e(tag = "PAYPAY", messageString = "GridUI(viewModel)")
         GridUI(viewModel)
     }
 

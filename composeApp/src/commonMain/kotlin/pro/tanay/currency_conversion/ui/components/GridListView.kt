@@ -25,14 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.touchlab.kermit.Logger
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
 import pro.tanay.currency_conversion.viewmodel.MainViewModel
 
 @Composable
 fun GridUI(viewModel: MainViewModel) {
-    Logger.e(tag = "PAYPAY", messageString = "GridUI")
     val list = remember { mutableStateOf<List<Currency>>(mutableListOf()) }
     val state: RequestState by viewModel.state.collectAsStateWithLifecycle()
     val isError = remember { mutableStateOf(false) }
@@ -42,18 +40,15 @@ fun GridUI(viewModel: MainViewModel) {
         is RequestState.Error -> {
             errorMessage.value = (state as RequestState.Error).message
             isError.value = true
-            Logger.e(tag = "PAYPAY", messageString = "RequestState.Error")
         }
 
         RequestState.Loading -> {
-            Logger.e(tag = "PAYPAY", messageString = "RequestState.Loading")
             ProgressBar()
         }
 
         is RequestState.Success -> {
             isError.value = false
             list.value = (state as RequestState.Success).data.currencyList
-            Logger.e(tag = "PAYPAY", messageString = "RequestState.Success ${list.value}")
             GridView(list)
         }
     }
@@ -67,7 +62,6 @@ fun GridUI(viewModel: MainViewModel) {
 
 @Composable
 private fun GridView(list: MutableState<List<Currency>>) {
-    Logger.e(tag = "PAYPAY", messageString = "Grid")
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),

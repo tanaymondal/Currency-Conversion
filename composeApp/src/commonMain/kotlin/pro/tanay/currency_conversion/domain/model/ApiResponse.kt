@@ -10,8 +10,7 @@ data class ApiResponse(
 
 @Entity(tableName = "currency")
 data class Currency(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
     val code: String,
     val value: Double
 )
