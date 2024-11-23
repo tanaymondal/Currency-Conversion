@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 data class ApiResponse(
-    val timestamp: Long,
     val currencyList: List<Currency>,
     val currencyMap: Map<String, Double>
 )

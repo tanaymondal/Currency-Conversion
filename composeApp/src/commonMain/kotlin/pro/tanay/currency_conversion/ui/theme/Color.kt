@@ -65,12 +65,6 @@ val md_theme_dark_outlineVariant = Color(0xFF3F4945)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 
-val seed = Color(0xFF006B58)
-
-
-val freshColor = Color(0xFF44FF78)
-val staleColor = Color(0xFFFF9E44)
-
 val primaryColor
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF86A8FC)

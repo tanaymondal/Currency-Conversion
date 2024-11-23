@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import pro.tanay.currency_conversion.data.remote.api.roundTo
 import pro.tanay.currency_conversion.database.CurrencyDatabase
 import pro.tanay.currency_conversion.domain.ICurrencyApiRepository
 import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
+import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
 
 class MainViewModel(
@@ -26,7 +28,13 @@ class MainViewModel(
     private val _state: MutableStateFlow<RequestState> = MutableStateFlow(RequestState.Loading)
     val state = _state.asStateFlow()
 
+    private var currencyList = listOf<Currency>()
+
     init {
+        initialization()
+    }
+
+    private fun initialization() {
         viewModelScope.launch {
             preferenceService.shouldRefreshData()
                 .flowOn(Dispatchers.Default)
@@ -54,6 +62,9 @@ class MainViewModel(
             withContext(Dispatchers.Default) {
                 val state = currencyApiService.getLatestExchangeRates()
                 _state.emit(state)
+                if (state is RequestState.Success) {
+                    currencyList = state.data.currencyList
+                }
             }
         }
     }
@@ -63,8 +74,34 @@ class MainViewModel(
             database.currencyDao().getAllCurrencies()
                 .flowOn(Dispatchers.Default)
                 .collectLatest { list ->
-                    _state.emit(RequestState.Success(ApiResponse(0, list, mutableMapOf())))
+                    currencyList = list
+                    _state.emit(RequestState.Success(ApiResponse(list, mutableMapOf())))
                 }
         }
+    }
+
+    fun process(input: String, baseCurrency: Currency) {
+        viewModelScope.launch {
+            database.currencyDao().getAllCurrencies()
+                .flowOn(Dispatchers.Default)
+                .collectLatest { list ->
+                    val newList = mutableListOf<Currency>()
+                    list.forEach { currency ->
+                        val converted =
+                            (currency.value / baseCurrency.value * input.toDouble()).roundTo(4)
+                        newList.add(currency.copy(value = converted))
+                    }
+                    _state.emit(RequestState.Success(ApiResponse(newList, mutableMapOf())))
+                }
+        }
+    }
+
+    fun getCurrencyList() = currencyList
+
+    fun retry() {
+        viewModelScope.launch {
+            _state.emit(RequestState.Loading)
+        }
+        initialization()
     }
 }

@@ -7,6 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
@@ -16,6 +17,7 @@ import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
+import kotlin.math.pow
 import kotlin.math.round
 
 class CurrencyApiRepositoryImpl(
@@ -52,7 +54,6 @@ class CurrencyApiRepositoryImpl(
             if (response.status.value == 200) {
 
                 val jsonElement = Json.parseToJsonElement(response.bodyAsText())
-                val timestamp = jsonElement.jsonObject[TIMESTAMP]
                 val rates = jsonElement.jsonObject[RATES]
 
                 val keys = (rates as JsonObject).keys
@@ -61,16 +62,15 @@ class CurrencyApiRepositoryImpl(
                 val map = mutableMapOf<String, Double>()
                 keys.forEach {
                     // rounding off to 2 decimal point
-                    val rate = rates[it].toString().toDouble().roundTo()
+                    val rate = rates[it].toString().toDouble()
                     map[it] = rate
                     list.add(Currency(code = it, value = rate))
                 }
-                println("LOG_CMP Timestamp: ${timestamp.toString()}")
-                preferenceRepository.saveTimestamp(timestamp.toString().toLong())
+                preferenceRepository.saveTimestamp(Clock.System.now().epochSeconds)
 
-                database.currencyDao().upsertAll(list)
+                database.currencyDao().insertAll(list)
 
-                return RequestState.Success(ApiResponse(timestamp.toString().toLong(), list, map))
+                return RequestState.Success(ApiResponse(list, map))
             } else {
                 return RequestState.Error(message = "HTTP Error Code: ${response.status}")
             }
@@ -81,6 +81,7 @@ class CurrencyApiRepositoryImpl(
     }
 }
 
-fun Double.roundTo(): Double {
-    return round(this * 10000) / 10000
+fun Double.roundTo(decimals: Int): Double {
+    val factor = 10.0.pow(decimals)
+    return round(this * factor) / factor
 }
