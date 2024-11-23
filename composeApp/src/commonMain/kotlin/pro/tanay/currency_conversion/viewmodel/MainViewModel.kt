@@ -93,18 +93,6 @@ class MainViewModel(
                 }
                 _state.emit(RequestState.Success(ApiResponse(newList, mutableMapOf())))
             }
-
-            /*            database.currencyDao().getAllCurrencies()
-                            .flowOn(Dispatchers.Default)
-                            .collectLatest { list ->
-                                val newList = mutableListOf<Currency>()
-                                list.forEach { currency ->
-                                    val converted =
-                                        (currency.value / baseCurrency.value * input.toDouble()).roundTo(4)
-                                    newList.add(currency.copy(value = converted))
-                                }
-                                _state.emit(RequestState.Success(ApiResponse(newList, mutableMapOf())))
-                            }*/
         }
     }
 
