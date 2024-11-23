@@ -1,12 +1,15 @@
-This is a Currency Conversion project using Compose Multiplatform targeting Android, iOS with MVVM
-architecture.
-Below components are used to achieve the functionality:
+* This is a Currency Conversion project using `Compose Multi Platform` targeting Android, iOS with MVVM
+  architecture.
+* This projects is made for `PayPay` Mobile Coding Challenge
 
-`Datastore` : For storing the timestamp of last API call. If timestamp difference is more
-than 30 minutes, we again fetch from API, else we fetch from database.
-`Room Databse` : For storing list of currencies once we get from API.
-`Koin` : For dependency injection.
-`ktor` : For API calling.
+* Below components are used to achieve the functionality:
+  - `Datastore` : For storing the timestamp of last API call. If timestamp difference is more
+    than 30 minutes, we again fetch from API, else we fetch from database.
+  - `Room Databse` : For storing list of currencies once we get from API.
+  - `Koin` : For dependency injection.
+  - `Ktor` : For API calling.
+
+* © Tanay Mondal
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
