@@ -161,7 +161,7 @@ class CurrencyViewModelTest : KoinTest {
         val dataFromApi = viewModel.getCurrencyList()
         assertEquals(dataFromApi, apiDataList())
 
-        // at first stage will be Success
+        // at last stage will be Success
         assertTrue(viewModel.state.first() is RequestState.Success)
     }
 
@@ -186,7 +186,7 @@ class CurrencyViewModelTest : KoinTest {
         val dataFromApi = viewModel.getCurrencyList()
         assertEquals(dataFromApi, apiDataList())
 
-        // at first stage will be Success
+        // at last stage will be Success
         assertTrue(viewModel.state.first() is RequestState.Success)
 
         val data = viewModel.state.first() as RequestState.Success
