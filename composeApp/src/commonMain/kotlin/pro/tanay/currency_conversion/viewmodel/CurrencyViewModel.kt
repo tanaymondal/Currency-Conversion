@@ -6,15 +6,21 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import pro.tanay.currency_conversion.domain.IRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
+import pro.tanay.currency_conversion.ext.CoroutineDispatcherProvider
 import pro.tanay.currency_conversion.ext.roundTo
 
-class CurrencyViewModel(val repository: IRepository) : ViewModel() {
+class CurrencyViewModel(
+    val repository: IRepository,
+    private val dispatcher: CoroutineDispatcherProvider
+) : ViewModel() {
 
     private val _state: MutableStateFlow<RequestState> = MutableStateFlow(RequestState.Loading)
     val state = _state.asStateFlow()
@@ -28,6 +34,7 @@ class CurrencyViewModel(val repository: IRepository) : ViewModel() {
     fun initialization() {
         viewModelScope.launch {
             repository.localRepository().preference().getTimestamp()
+                .flowOn(dispatcher.default)
                 .collectLatest { lastRefreshedTime ->
                     // if value > 0 means: data is available in db else no data available, need to refresh
                     if (lastRefreshedTime > 0) {
@@ -49,31 +56,38 @@ class CurrencyViewModel(val repository: IRepository) : ViewModel() {
 
     private fun getDataFromApi() {
         viewModelScope.launch {
-            val state = repository.remoteRepository().getLatestExchangeRates()
-            _state.emit(state)
-            if (state is RequestState.Success) {
-                currencyList = state.data.currencyList
+            withContext(dispatcher.default) {
+                val state = repository.remoteRepository().getLatestExchangeRates()
+                _state.emit(state)
+                if (state is RequestState.Success) {
+                    currencyList = state.data.currencyList
+                }
             }
         }
     }
 
     private fun getDataFromDatabase() {
         viewModelScope.launch {
-            repository.localRepository().database().getAllCurrencies().collectLatest { list ->
-                currencyList = list
-                _state.emit(RequestState.Success(ApiResponse(list)))
-            }
+            repository.localRepository().database().getAllCurrencies()
+                .flowOn(dispatcher.default)
+                .collectLatest { list ->
+                    currencyList = list
+                    _state.emit(RequestState.Success(ApiResponse(list)))
+                }
         }
     }
 
     fun process(input: String, baseCurrency: Currency) {
         viewModelScope.launch {
-            val newList = mutableListOf<Currency>()
-            currencyList.forEach { currency ->
-                val converted = (currency.value / baseCurrency.value * input.toDouble()).roundTo(4)
-                newList.add(currency.copy(value = converted))
+            withContext(dispatcher.default) {
+                val newList = mutableListOf<Currency>()
+                currencyList.forEach { currency ->
+                    val converted =
+                        (currency.value / baseCurrency.value * input.toDouble()).roundTo(4)
+                    newList.add(currency.copy(value = converted))
+                }
+                _state.emit(RequestState.Success(ApiResponse(newList)))
             }
-            _state.emit(RequestState.Success(ApiResponse(newList)))
         }
     }
 

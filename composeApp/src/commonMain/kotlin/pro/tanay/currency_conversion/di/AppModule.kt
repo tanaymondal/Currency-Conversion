@@ -11,6 +11,7 @@ import pro.tanay.currency_conversion.domain.ILocalRepository
 import pro.tanay.currency_conversion.domain.IPreferenceRepository
 import pro.tanay.currency_conversion.domain.IRemoteRepository
 import pro.tanay.currency_conversion.domain.IRepository
+import pro.tanay.currency_conversion.ext.CoroutineDispatcherProvider
 
 val appModule = module {
 
@@ -21,4 +22,6 @@ val appModule = module {
     single<IRemoteRepository> { RemoteRepositoryImpl(get()) }
 
     single<IRepository> { RepositoryImpl(get(), get()) }
+
+    single<CoroutineDispatcherProvider> { CoroutineDispatcherProvider() }
 }

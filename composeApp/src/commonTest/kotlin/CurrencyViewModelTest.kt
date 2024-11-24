@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.Clock
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -26,6 +27,7 @@ import pro.tanay.currency_conversion.domain.IRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
+import pro.tanay.currency_conversion.ext.CoroutineDispatcherProvider
 import pro.tanay.currency_conversion.viewmodel.CurrencyViewModel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -38,24 +40,36 @@ class CurrencyViewModelTest : KoinTest {
 
     private lateinit var viewModel: CurrencyViewModel
 
-    private val testModule = module {
-        single<IPreferenceRepository> { FakePreferenceRepo() }
-        single<IDatabaseRepository> { FakeDatabaseRepo() }
+    private fun testModule(coroutineDispatcherProvider: CoroutineDispatcherProvider): Module {
+        val module = module {
+            single<IPreferenceRepository> { FakePreferenceRepo() }
+            single<IDatabaseRepository> { FakeDatabaseRepo() }
 
-        single<ILocalRepository> { LocalRepositoryImpl(get(), get()) }
-        single<IRemoteRepository> { FakeCurrencyRepo() }
+            single<ILocalRepository> { LocalRepositoryImpl(get(), get()) }
+            single<IRemoteRepository> { FakeCurrencyRepo() }
 
-        single<IRepository> { RepositoryImpl(get(), get()) }
+            single<IRepository> { RepositoryImpl(get(), get()) }
 
-        single { CurrencyViewModel(get()) }
+            single { CurrencyViewModel(get(), coroutineDispatcherProvider) }
+        }
+        return module
     }
+
 
     @BeforeTest
     fun setUp() {
+        val dispatcher = StandardTestDispatcher()
+        val coroutineDispatcherProvider = CoroutineDispatcherProvider(
+            main = dispatcher,
+            default = dispatcher,
+            io = dispatcher
+        )
+
         startKoin {
-            modules(testModule)
+            modules(testModule(coroutineDispatcherProvider))
         }
-        Dispatchers.setMain(StandardTestDispatcher())
+
+        Dispatchers.setMain(dispatcher)
         viewModel = get()
         addDataForApi()
         addDataToDatabase()
