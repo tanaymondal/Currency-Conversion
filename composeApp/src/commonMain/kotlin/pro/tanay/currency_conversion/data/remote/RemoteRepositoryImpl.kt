@@ -11,17 +11,15 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import pro.tanay.currency_conversion.database.CurrencyDatabase
-import pro.tanay.currency_conversion.domain.ICurrencyApiRepository
-import pro.tanay.currency_conversion.domain.IPreferenceRepository
+import pro.tanay.currency_conversion.domain.ILocalRepository
+import pro.tanay.currency_conversion.domain.IRemoteRepository
 import pro.tanay.currency_conversion.domain.model.ApiResponse
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
 
-class CurrencyApiRepositoryImpl(
-    private val preferenceRepository: IPreferenceRepository,
-    private val database: CurrencyDatabase
-) : ICurrencyApiRepository {
+class RemoteRepositoryImpl(
+    private val localRepository: ILocalRepository,
+) : IRemoteRepository {
 
     companion object {
         private const val API_ID = "885bcf9b8abf49cbafda6ce9636637c5"
@@ -55,17 +53,16 @@ class CurrencyApiRepositoryImpl(
                 val keys = (rates as JsonObject).keys
 
                 val list = mutableListOf<Currency>()
-                val map = mutableMapOf<String, Double>()
                 keys.forEach {
                     val rate = rates[it].toString().toDouble()
-                    map[it] = rate
                     list.add(Currency(code = it, value = rate))
                 }
-                preferenceRepository.saveTimestamp(Clock.System.now().epochSeconds)
 
-                database.currencyDao().insertAll(list)
+                localRepository.preference().saveTimestamp(Clock.System.now().epochSeconds)
 
-                return RequestState.Success(ApiResponse(list, map))
+                localRepository.database().insertAll(list)
+
+                return RequestState.Success(ApiResponse(list))
             } else {
                 return RequestState.Error(message = "HTTP Error Code: ${response.status}")
             }

@@ -6,6 +6,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
+import pro.tanay.currency_conversion.data.local.database.CurrencyDatabase
 
 fun createCurrencyDatabase(): CurrencyDatabase {
     val dbFilePath = documentDirectory() + "/currency.db"

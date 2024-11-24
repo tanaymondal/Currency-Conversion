@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface IPreferenceRepository {
     suspend fun saveTimestamp(timestamp: Long)
-    fun shouldRefreshData(): Flow<Long>
+    fun getTimestamp(): Flow<Long>
 }

@@ -12,7 +12,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import pro.tanay.currency_conversion.ext.koinViewModel
 import pro.tanay.currency_conversion.ui.pages.HomePage
-import pro.tanay.currency_conversion.viewmodel.MainViewModel
+import pro.tanay.currency_conversion.viewmodel.CurrencyViewModel
 
 @Composable
 @Preview
@@ -25,7 +25,8 @@ fun App() {
                 navController = navController, startDestination = "HomePage"
             ) {
                 composable("HomePage") {
-                    val viewModel = koinViewModel<MainViewModel>()
+                    val viewModel = koinViewModel<CurrencyViewModel>()
+                    viewModel.initialization()
                     HomePage(viewModel)
                 }
             }

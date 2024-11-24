@@ -1,4 +1,4 @@
-package pro.tanay.currency_conversion.data.local
+package pro.tanay.currency_conversion.data.local.preference
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -19,7 +19,7 @@ class PreferenceRepositoryImpl(private val dataStore: DataStore<Preferences>) :
         }
     }
 
-    override fun shouldRefreshData(): Flow<Long> {
+    override fun getTimestamp(): Flow<Long> {
         return dataStore
             .data
             .map {

@@ -6,14 +6,14 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import pro.tanay.currency_conversion.database.createCurrencyDatabase
 import pro.tanay.currency_conversion.datastore.createDataStore
-import pro.tanay.currency_conversion.viewmodel.MainViewModel
+import pro.tanay.currency_conversion.viewmodel.CurrencyViewModel
 
 actual val preferenceModule: Module = module {
     single { createDataStore(androidContext()) }
 }
 
 actual val viewModelModule = module {
-    viewModelOf(::MainViewModel)
+    viewModelOf(::CurrencyViewModel)
 }
 
 actual val databaseModule: Module = module {

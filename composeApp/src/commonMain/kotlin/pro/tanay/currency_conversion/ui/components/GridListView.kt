@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import pro.tanay.currency_conversion.domain.model.Currency
 import pro.tanay.currency_conversion.domain.model.RequestState
-import pro.tanay.currency_conversion.viewmodel.MainViewModel
+import pro.tanay.currency_conversion.viewmodel.CurrencyViewModel
 
 @Composable
-fun GridUI(viewModel: MainViewModel) {
+fun GridUI(viewModel: CurrencyViewModel) {
     val list = remember { mutableStateOf<List<Currency>>(mutableListOf()) }
     val state: RequestState by viewModel.state.collectAsStateWithLifecycle()
     val isError = remember { mutableStateOf(false) }

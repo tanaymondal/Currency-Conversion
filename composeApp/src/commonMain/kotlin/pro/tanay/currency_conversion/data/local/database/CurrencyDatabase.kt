@@ -1,4 +1,4 @@
-package pro.tanay.currency_conversion.database
+package pro.tanay.currency_conversion.data.local.database
 
 import androidx.room.ConstructedBy
 import androidx.room.Database

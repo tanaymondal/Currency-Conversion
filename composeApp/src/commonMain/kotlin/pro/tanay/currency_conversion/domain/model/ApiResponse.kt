@@ -4,8 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 data class ApiResponse(
-    val currencyList: List<Currency>,
-    val currencyMap: Map<String, Double>
+    val currencyList: List<Currency>
 )
 
 @Entity(tableName = "currency")

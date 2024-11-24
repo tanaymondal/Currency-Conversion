@@ -14,11 +14,11 @@ import pro.tanay.currency_conversion.ext.getValidInput
 import pro.tanay.currency_conversion.ui.components.CurrencyPickerDialog
 import pro.tanay.currency_conversion.ui.components.GridUI
 import pro.tanay.currency_conversion.ui.components.TopHeaderView
-import pro.tanay.currency_conversion.viewmodel.MainViewModel
+import pro.tanay.currency_conversion.viewmodel.CurrencyViewModel
 import surfaceColor
 
 @Composable
-fun HomePage(viewModel: MainViewModel) {
+fun HomePage(viewModel: CurrencyViewModel) {
     val defaultCurrency = Currency("USD", 1.0)
     val inputText = remember { mutableStateOf("1") }
     val currency = remember { mutableStateOf(defaultCurrency) }
