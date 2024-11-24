@@ -9,6 +9,8 @@
   - `Koin` : For dependency injection.
   - `Ktor` : For API calling.
 
+* Unit Tests are written for ViewModel class using KoinTest
+
 * © Tanay Mondal
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
